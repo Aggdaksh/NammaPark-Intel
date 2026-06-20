@@ -9,6 +9,7 @@
     "dev": "node backend/node/index.js",
     "dev:api": "node backend/node/index.js",
     "dev:next": "next dev frontend -p 3000",
+    "build": "next build frontend",
     "build:next": "next build frontend",
     "start:next": "next start frontend -p 3000",
     "typecheck:next": "tsc -p frontend/tsconfig.json --noEmit",
