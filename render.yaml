@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: nammapark-intel-api
+    runtime: python
+    buildCommand: pip install uv && uv sync
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: UPSTASH_REDIS_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SENTRY_DSN
+        sync: false

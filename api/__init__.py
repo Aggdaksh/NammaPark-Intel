@@ -1,0 +1,1 @@
+"""NammaPark Intel FastAPI package."""

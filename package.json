@@ -1,0 +1,45 @@
+{
+  "name": "nammapark-intel-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CSV-derived NammaPark Intel hackathon demo with local API and dashboard.",
+  "type": "module",
+  "scripts": {
+    "generate": "/Users/dakshaggarwal/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 tools/build_demo_data.py --csv \"../jan to may police violation_anonymized791b166.csv\"",
+    "dev": "node backend/node/index.js",
+    "dev:api": "node backend/node/index.js",
+    "dev:next": "next dev frontend -p 3000",
+    "build:next": "next build frontend",
+    "start:next": "next start frontend -p 3000",
+    "typecheck:next": "tsc -p frontend/tsconfig.json --noEmit",
+    "api": "/Users/dakshaggarwal/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m uvicorn api.main:app --host 127.0.0.1 --port 8000",
+    "db:schema": "/Users/dakshaggarwal/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m ml.pipeline.db_setup --write-sql ml/data/schema.sql",
+    "test": "/Users/dakshaggarwal/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 tools/check_demo_data.py && /Users/dakshaggarwal/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 tools/check_map_roads.py && node tools/check_auth_module.mjs && node --check backend/node/index.js && node --check backend/node/auth.js && node --check backend/node/fallback-store.js && node --check frontend/app.js && node --check frontend/dashboard.js && node --check frontend/map-page.js && node --check frontend/chat-page.js && node --check frontend/modules/api.js && node --check frontend/modules/common.js && node --check frontend/modules/map-renderer.js && node --check frontend/modules/google-map-renderer.js && node --check frontend/login.js"
+  },
+  "dependencies": {
+    "@deck.gl/core": "^9.3.4",
+    "@deck.gl/geo-layers": "^9.3.4",
+    "@deck.gl/layers": "^9.3.4",
+    "@deck.gl/react": "^9.3.4",
+    "@sentry/nextjs": "^10.59.0",
+    "lucide-react": "^1.21.0",
+    "mapbox-gl": "^3.25.0",
+    "next": "15.5.19",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-map-gl": "^8.1.1",
+    "recharts": "^3.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.5",
+    "@types/react": "18.3.18",
+    "@types/react-dom": "18.3.5",
+    "typescript": "5.7.2"
+  },
+  "overrides": {
+    "postcss": "8.5.10"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

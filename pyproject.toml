@@ -1,0 +1,55 @@
+[project]
+name = "nammapark-intel"
+version = "0.1.0"
+description = "NammaPark Intel parking-induced congestion intelligence platform."
+requires-python = ">=3.12"
+dependencies = [
+  "lightgbm==4.3.0",
+  "xgbse==0.3.2",
+  "hdbscan==0.8.38.post1",
+  "h3==3.7.7",
+  "osmnx==1.9.3",
+  "scikit-learn==1.5.0",
+  "shap==0.45.1",
+  "lifelines==0.29.0",
+  "ortools==9.10.4067",
+  "pandas==2.2.2",
+  "geopandas==0.14.4",
+  "pyarrow==16.1.0",
+  "pydantic==2.7.0",
+  "sqlalchemy==2.0.30",
+  "psycopg[binary]==3.1.19",
+  "redis==5.0.4",
+  "fastapi==0.111.0",
+  "uvicorn[standard]==0.29.0",
+  "hypothesis>=6.100.0",
+  "pytest>=8.2.0",
+  "circuitbreaker>=2.0.0",
+  "sentry-sdk[fastapi]>=2.0.0",
+  "joblib>=1.4.0",
+  "google-genai>=0.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "httpx>=0.27.0",
+  "ruff>=0.5.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["ml/tests", "api/tests", "tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["api", "ml"]
