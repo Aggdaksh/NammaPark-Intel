@@ -45,9 +45,9 @@ export async function loadOperationsData(): Promise<OperationsData> {
   const [session, health, hotspots, routes, anomalies, demoData] = await Promise.all([
     apiFetch<Session>("/api/session").catch(() => null),
     apiFetch<Health>("/api/health").catch(() => null),
-    apiFetch<ListResponse<Cluster>>("/api/hotspots?limit=50").catch(() => ({ items: [] })),
-    apiFetch<ListResponse<PatrolRoute>>("/api/patrol-routes").catch(() => ({ items: [] })),
-    apiFetch<ListResponse<AnomalyAlert>>("/api/anomalies").catch(() => ({ items: [] })),
+    apiFetch<ListResponse<Cluster>>("/api/hotspots?limit=50").catch(() => ({ items: [] } as ListResponse<Cluster>)),
+    apiFetch<ListResponse<PatrolRoute>>("/api/patrol-routes").catch(() => ({ items: [] } as ListResponse<PatrolRoute>)),
+    apiFetch<ListResponse<AnomalyAlert>>("/api/anomalies").catch(() => ({ items: [] } as ListResponse<AnomalyAlert>)),
     apiFetch<DemoData>("/api/demo-data").catch(() => ({} as DemoData))
   ]);
 
