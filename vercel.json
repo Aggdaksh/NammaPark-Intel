@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://nammapark-intel-api.onrender.com/api/:path*"
+      "destination": "https://nammapark-intel.onrender.com/api/:path*"
     }
   ]
 }
