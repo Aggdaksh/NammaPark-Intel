@@ -3,7 +3,7 @@ services:
     name: nammapark-intel-api
     runtime: python
     buildCommand: pip install uv && uv sync
-    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    startCommand: uv run uvicorn api.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
         sync: false
