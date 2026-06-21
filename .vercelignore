@@ -1,0 +1,14 @@
+# Ignore Python and backend directories to speed up Vercel builds and prevent Python builder invocation
+api/
+ml/
+backend/
+tests/
+tools/
+scripts/
+docs/
+.venv/
+.cache/
+.uv-cache/
+pyproject.toml
+uv.lock
+render.yaml
