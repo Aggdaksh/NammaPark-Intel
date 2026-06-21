@@ -46,7 +46,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <img src="/assets/nammapark-wordmark.png" alt="NammaPark Intel" />
         </div>
         <div className="operator-area">
-          <span>Operator</span>
+          <span>Logged in</span>
           <strong>{session?.user || "operator"}</strong>
           <button type="button" className="logout-button" onClick={handleLogout}>
             Log out

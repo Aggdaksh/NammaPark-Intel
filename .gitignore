@@ -8,9 +8,11 @@ __pycache__/
 *.pyc
 .DS_Store
 ml/data/*.graphml
+ml/data/uploads/
 ml/artifacts/
 public/fallback/
 docs/
 node_modules/
 frontend/node_modules/
 frontend/.next/
+frontend/tsconfig.tsbuildinfo

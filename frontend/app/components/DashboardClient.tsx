@@ -6,9 +6,8 @@ import { loadOperationsData } from "@/lib/api";
 import { enforcementWindowLabel, formatNumber, formatPredictionWindow, riskColor } from "@/lib/format";
 import type { Cluster, OperationsData } from "@/types/api";
 import { ClusterPanel } from "./ClusterPanel";
-import { EnforcementQueue } from "./EnforcementQueue";
-import { PatrolRouteMap } from "./PatrolRouteMap";
 import { CsvUploader } from "./CsvUploader";
+import { EnforcementQueue } from "./EnforcementQueue";
 
 export function DashboardClient() {
   const [data, setData] = useState<OperationsData | null>(null);
@@ -45,10 +44,11 @@ export function DashboardClient() {
     <div className="dashboard-layout">
       <section className="brief-panel">
         <div>
-          <span className="eyebrow">Live shift</span>
-          <h1>Bengaluru parking enforcement desk</h1>
+          <span className="eyebrow">Operational overview</span>
+          <h1>Bengaluru parking enforcement operations</h1>
           <p>
-            Current model output for hotspot prioritization, patrol queueing, anomaly review, and officer dispatch planning.
+            Cluster {topCluster?.cluster_id || "--"} is the current priority zone. Assign the nearest patrol unit toward
+            cluster {data.hotspots[3]?.cluster_id || topCluster?.cluster_id || "--"} for the next enforcement run.
           </p>
         </div>
         <div className="brief-kpis">
@@ -62,18 +62,19 @@ export function DashboardClient() {
           </div>
         </div>
         <div className="brief-actions">
-          <Link className="primary-button" href="/map">Open map</Link>
-          <Link className="secondary-button" href="/commander">Ask assistant</Link>
+          <Link className="primary-button" href="/map">View geospatial map</Link>
+          <Link className="secondary-button" href="/commander">Open command assistant</Link>
         </div>
-        <CsvUploader />
       </section>
 
       <section className="metric-strip" aria-label="Operational metrics">
         <MetricCard label="Priority zones" value={formatNumber(data.hotspots.length)} tone="#0d766d" />
         <MetricCard label="Exception alerts" value={formatNumber(data.anomalies.length)} tone="#b64232" />
-        <MetricCard label="Route yield" value={formatNumber(routeYield, 2)} tone="#c38119" />
+        <MetricCard label="Estimated clearance" value={formatNumber(routeYield, 0)} tone="#c38119" />
         <MetricCard label="Validated records" value={formatNumber(records)} tone="#145c8c" />
       </section>
+
+      <CsvUploader />
 
       <div className="content-grid">
         <section className="panel queue-panel">
@@ -94,8 +95,26 @@ export function DashboardClient() {
         </section>
 
         <aside className="side-stack">
+          <section className="panel ops-brief">
+            <div className="panel-heading">
+              <div>
+                <span className="eyebrow">Operations brief</span>
+                <h2>Shift summary</h2>
+              </div>
+              <span className="badge">17:00 IST</span>
+            </div>
+            <div className="mini-metrics">
+              <div><span>Units</span><strong>{formatNumber(data.routes.length || 3)}</strong></div>
+              <div><span>Delay yield</span><strong>{formatNumber(routeYield, 0)}</strong></div>
+              <div><span>Top risk</span><strong>{Math.round(topCluster?.final_risk_0_100 || 0)}/100</strong></div>
+              <div><span>Alerts</span><strong>{formatNumber(data.anomalies.length)}</strong></div>
+            </div>
+            <p className="panel-callout">
+              Assign {data.routes[0]?.unit_id || "BT-01"} from {data.routes[0]?.origin_station || "HAL OLD AIRPORT"} to cluster{" "}
+              {topCluster?.cluster_id || "--"} at {data.routes[0]?.waypoints?.[0]?.arrival_label || "17:05"}.
+            </p>
+          </section>
           <ClusterPanel cluster={selectedCluster} />
-          <PatrolRouteMap routes={data.routes} />
           <section className="panel">
             <div className="panel-heading">
               <div>

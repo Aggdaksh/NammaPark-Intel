@@ -144,3 +144,23 @@ CREATE TABLE IF NOT EXISTS patrol_routes (
 
 CREATE INDEX IF NOT EXISTS idx_patrol_routes_shift_unit
     ON patrol_routes (shift_date, unit_id);
+
+CREATE TABLE IF NOT EXISTS violation_csv_uploads (
+    upload_id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    filename        TEXT NOT NULL,
+    content_sha256  TEXT NOT NULL,
+    row_count       INTEGER NOT NULL DEFAULT 0,
+    status          TEXT NOT NULL DEFAULT 'received',
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS violation_csv_upload_rows (
+    id              BIGSERIAL PRIMARY KEY,
+    upload_id       UUID NOT NULL REFERENCES violation_csv_uploads(upload_id) ON DELETE CASCADE,
+    row_number      INTEGER NOT NULL,
+    payload         JSONB NOT NULL,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_violation_csv_upload_rows_upload
+    ON violation_csv_upload_rows (upload_id, row_number);

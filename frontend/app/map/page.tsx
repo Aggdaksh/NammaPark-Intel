@@ -1,10 +1,10 @@
 import { AppShell } from "../components/AppShell";
-import { DeckMapClient } from "../components/DeckMapClient";
+import { MapClient } from "../components/MapClient";
 
 export default function MapPage() {
   return (
     <AppShell>
-      <DeckMapClient />
+      <MapClient />
     </AppShell>
   );
 }

@@ -1,11 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 
 export function LoginClient() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [username, setUsername] = useState("operator");
   const [password, setPassword] = useState("gridlock");
@@ -19,9 +18,10 @@ export function LoginClient() {
     try {
       await apiFetch("/api/login", {
         method: "POST",
+        headers: { "content-type": "application/json" },
         body: JSON.stringify({ username, password })
       });
-      router.replace(searchParams.get("next") || "/");
+      window.location.assign(searchParams.get("next") || "/");
     } catch {
       setStatus("Login failed. Please verify the authorized operator credentials.");
     } finally {

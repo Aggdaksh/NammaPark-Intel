@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { loadMapSupport, loadOperationsData } from "@/lib/api";
-import { formatNumber, hourlyRisk, padHour, riskColor, riskLabel } from "@/lib/format";
+import { formatNumber, hourlyRisk, padHour, riskColor } from "@/lib/format";
 import type { Cluster, MapRoads, MapsConfig, OperationsData, PatrolRoute, RoadSegment } from "@/types/api";
 
 declare global {
@@ -153,6 +153,48 @@ function drawRoutes(
   });
 }
 
+function markerSides(risk: number, selected = false) {
+  if (selected || risk >= 75) return 6;
+  if (risk >= 55) return 4;
+  return 5;
+}
+
+function markerRotation(sides: number) {
+  if (sides === 4) return Math.PI / 4;
+  if (sides === 5) return -Math.PI / 2;
+  return Math.PI / 6;
+}
+
+function drawRegularPolygon(ctx: CanvasRenderingContext2D, x: number, y: number, radius: number, sides: number) {
+  const rotation = markerRotation(sides);
+  ctx.beginPath();
+  for (let index = 0; index < sides; index += 1) {
+    const angle = rotation + (Math.PI * 2 * index) / sides;
+    const pointX = x + Math.cos(angle) * radius;
+    const pointY = y + Math.sin(angle) * radius;
+    if (index === 0) ctx.moveTo(pointX, pointY);
+    else ctx.lineTo(pointX, pointY);
+  }
+  ctx.closePath();
+}
+
+function googlePolygonPath(
+  center: { lat: number; lng: number },
+  radiusMeters: number,
+  sides: number
+) {
+  const rotation = markerRotation(sides);
+  const latRadius = radiusMeters / 111_320;
+  const lngRadius = radiusMeters / (111_320 * Math.cos((center.lat * Math.PI) / 180));
+  return Array.from({ length: sides }, (_, index) => {
+    const angle = rotation + (Math.PI * 2 * index) / sides;
+    return {
+      lat: center.lat + Math.sin(angle) * latRadius,
+      lng: center.lng + Math.cos(angle) * lngRadius
+    };
+  });
+}
+
 function drawHotspots(
   ctx: CanvasRenderingContext2D,
   canvas: HTMLCanvasElement,
@@ -170,26 +212,24 @@ function drawHotspots(
     const color = riskColor(risk);
     const isSelected = cluster.cluster_id === selectedClusterId;
     const haloRadius = Math.max(22, Math.min(64, 17 + risk * 0.42)) * (canvas.width / 1500);
+    const sides = markerSides(risk, isSelected);
     pointCache.push({ ...point, radius: haloRadius + 12, clusterId: cluster.cluster_id });
 
-    ctx.beginPath();
-    ctx.arc(point.x, point.y, haloRadius, 0, Math.PI * 2);
+    drawRegularPolygon(ctx, point.x, point.y, haloRadius, sides);
     ctx.fillStyle = `${color}2b`;
     ctx.fill();
     ctx.strokeStyle = isSelected ? "#0b2b49" : `${color}78`;
     ctx.lineWidth = isSelected ? Math.max(3, canvas.width / 430) : Math.max(1.5, canvas.width / 980);
     ctx.stroke();
 
-    ctx.beginPath();
-    ctx.arc(point.x, point.y, Math.max(7, haloRadius * 0.24), 0, Math.PI * 2);
+    drawRegularPolygon(ctx, point.x, point.y, Math.max(8, haloRadius * 0.28), sides);
     ctx.fillStyle = "#ffffff";
     ctx.fill();
     ctx.strokeStyle = isSelected ? "#0b2b49" : "rgba(16, 34, 50, 0.34)";
     ctx.lineWidth = isSelected ? 3 : 1.5;
     ctx.stroke();
 
-    ctx.beginPath();
-    ctx.arc(point.x, point.y, Math.max(5, haloRadius * 0.17), 0, Math.PI * 2);
+    drawRegularPolygon(ctx, point.x, point.y, Math.max(5, haloRadius * 0.18), sides);
     ctx.fillStyle = color;
     ctx.fill();
 
@@ -409,18 +449,44 @@ export function MapClient() {
       const color = riskColor(risk);
       const selected = cluster.cluster_id === selectedClusterId;
       const center = { lat: Number(cluster.centroid_lat), lng: Number(cluster.centroid_lon) };
-      const halo = new maps.Circle({
-        center,
-        radius: Math.max(160, Math.min(780, 150 + risk * 6.2)),
+      const radiusMeters = Math.max(180, Math.min(820, 155 + risk * 6.4));
+      const sides = markerSides(risk, selected);
+      const halo = new maps.Polygon({
+        paths: googlePolygonPath(center, radiusMeters, sides),
         strokeColor: selected ? "#0b2b49" : color,
         strokeOpacity: selected ? 0.9 : 0.42,
-        strokeWeight: selected ? 3 : 1.4,
+        strokeWeight: selected ? 3.4 : 1.5,
         fillColor: color,
-        fillOpacity: selected ? 0.25 : 0.16,
+        fillOpacity: selected ? 0.28 : 0.17,
+        zIndex: selected ? 55 : 35,
         map
       });
       halo.addListener("click", () => setSelectedClusterId(cluster.cluster_id));
       googleOverlaysRef.current.push(halo);
+      const core = new maps.Polygon({
+        paths: googlePolygonPath(center, Math.max(52, radiusMeters * 0.22), sides),
+        strokeColor: selected ? "#0b2b49" : "rgba(16, 34, 50, 0.42)",
+        strokeOpacity: 0.95,
+        strokeWeight: selected ? 2.5 : 1.5,
+        fillColor: "#ffffff",
+        fillOpacity: 0.96,
+        zIndex: selected ? 75 : 50,
+        map
+      });
+      core.addListener("click", () => setSelectedClusterId(cluster.cluster_id));
+      googleOverlaysRef.current.push(core);
+      const centerShape = new maps.Polygon({
+        paths: googlePolygonPath(center, Math.max(34, radiusMeters * 0.14), sides),
+        strokeColor: color,
+        strokeOpacity: 0.98,
+        strokeWeight: 1.2,
+        fillColor: color,
+        fillOpacity: 0.98,
+        zIndex: selected ? 85 : 58,
+        map
+      });
+      centerShape.addListener("click", () => setSelectedClusterId(cluster.cluster_id));
+      googleOverlaysRef.current.push(centerShape);
       if (showAnomalies && cluster.is_anomaly) {
         const marker = new maps.Marker({
           position: center,
@@ -495,7 +561,7 @@ export function MapClient() {
                   <span>{index + 1}</span>
                   <strong>Cluster {cluster.cluster_id}</strong>
                   <small>{cluster.police_station}</small>
-                  <em style={{ color }}>{riskLabel(cluster.final_risk_0_100)}</em>
+                  <em style={{ backgroundColor: color }}>{Math.round(cluster.final_risk_0_100)}</em>
                 </button>
               );
             })}

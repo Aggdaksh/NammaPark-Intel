@@ -11,10 +11,10 @@
     "dev:next": "next dev frontend -p 3000",
     "build:next": "next build frontend",
     "start:next": "next start frontend -p 3000",
-    "typecheck:next": "tsc -p frontend/tsconfig.json --noEmit",
+    "typecheck:next": "next typegen frontend && tsc -p frontend/tsconfig.json --noEmit",
     "api": "/Users/dakshaggarwal/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m uvicorn api.main:app --host 127.0.0.1 --port 8000",
     "db:schema": "/Users/dakshaggarwal/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m ml.pipeline.db_setup --write-sql ml/data/schema.sql",
-    "test": "/Users/dakshaggarwal/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 tools/check_demo_data.py && /Users/dakshaggarwal/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 tools/check_map_roads.py && node tools/check_auth_module.mjs && node --check backend/node/index.js && node --check backend/node/auth.js && node --check backend/node/fallback-store.js && node --check frontend/app.js && node --check frontend/dashboard.js && node --check frontend/map-page.js && node --check frontend/chat-page.js && node --check frontend/modules/api.js && node --check frontend/modules/common.js && node --check frontend/modules/map-renderer.js && node --check frontend/modules/google-map-renderer.js && node --check frontend/login.js"
+    "test": "/Users/dakshaggarwal/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 tools/check_demo_data.py && /Users/dakshaggarwal/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 tools/check_map_roads.py && node tools/check_auth_module.mjs && node --check backend/node/index.js && node --check backend/node/auth.js && node --check backend/node/fallback-store.js && npm run typecheck:next"
   },
   "dependencies": {
     "@deck.gl/core": "^9.3.4",

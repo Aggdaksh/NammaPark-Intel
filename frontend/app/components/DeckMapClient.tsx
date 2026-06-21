@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import DeckGL from "@deck.gl/react";
-import { H3HexagonLayer, PathLayer } from "@deck.gl/geo-layers";
-import Map from "react-map-gl";
+import { H3HexagonLayer } from "@deck.gl/geo-layers";
+import { PathLayer } from "@deck.gl/layers";
+import Map from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { loadMapSupport, loadOperationsData } from "@/lib/api";
-import { formatNumber, hourlyRisk, padHour, riskColor } from "@/lib/format";
-import type { OperationsData, PatrolRoute, Cluster } from "@/types/api";
+import { loadOperationsData } from "@/lib/api";
+import { hourlyRisk, padHour, riskColor } from "@/lib/format";
+import type { OperationsData } from "@/types/api";
 
 export function DeckMapClient() {
   const [operations, setOperations] = useState<OperationsData | null>(null);
@@ -117,7 +118,7 @@ export function DeckMapClient() {
       <div style={{ flex: 1, position: "relative" }}>
         <DeckGL
           viewState={viewState}
-          onViewStateChange={(e) => setViewState(e.viewState)}
+          onViewStateChange={(event) => setViewState(event.viewState as typeof viewState)}
           controller={true}
           layers={layers}
           getTooltip={({object}) => object && `Cluster ID: ${object.clusterId}`}

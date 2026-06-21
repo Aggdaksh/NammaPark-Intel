@@ -34,6 +34,8 @@ export interface Cluster {
   cluster_id: number;
   centroid_lat: number;
   centroid_lon: number;
+  h3_res8?: string;
+  h3_res9?: string;
   police_station: string;
   dominant_vehicle_type: string;
   dominant_violation_type: string;
