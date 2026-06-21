@@ -4,6 +4,18 @@
   "framework": "nextjs",
   "rewrites": [
     {
+      "source": "/api/login",
+      "destination": "/api/login"
+    },
+    {
+      "source": "/api/session",
+      "destination": "/api/session"
+    },
+    {
+      "source": "/api/commander",
+      "destination": "/api/commander"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://nammapark-intel.onrender.com/api/:path*"
     }
