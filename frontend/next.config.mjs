@@ -8,6 +8,8 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   devIndicators: false,
+  output: "standalone",
+  outputFileTracingRoot: path.join(__dirname, "..")
 };
 
 export default nextConfig;

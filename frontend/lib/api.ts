@@ -45,20 +45,20 @@ export async function loadOperationsData(): Promise<OperationsData> {
   const [session, health, hotspots, routes, anomalies, demoData] = await Promise.all([
     apiFetch<Session>("/api/session").catch(() => null),
     apiFetch<Health>("/api/health").catch(() => null),
-    apiFetch<ListResponse<Cluster>>("/api/hotspots?limit=50").catch(() => ({ items: [] } as ListResponse<Cluster>)),
-    apiFetch<ListResponse<PatrolRoute>>("/api/patrol-routes").catch(() => ({ items: [] } as ListResponse<PatrolRoute>)),
-    apiFetch<ListResponse<AnomalyAlert>>("/api/anomalies").catch(() => ({ items: [] } as ListResponse<AnomalyAlert>)),
-    apiFetch<DemoData>("/api/demo-data").catch(() => ({} as DemoData))
+    apiFetch<ListResponse<Cluster>>("/api/hotspots?limit=50"),
+    apiFetch<ListResponse<PatrolRoute>>("/api/patrol-routes").catch(() => ({ items: [] })),
+    apiFetch<ListResponse<AnomalyAlert>>("/api/anomalies").catch(() => ({ items: [] })),
+    apiFetch<DemoData>("/api/demo-data")
   ]);
 
   return {
     session,
     health,
-    metadata: demoData?.metadata || hotspots?.metadata || {},
-    hotspots: hotspots?.items || demoData?.hotspots || [],
-    clusters: demoData?.clusters || {},
-    routes: routes?.items || demoData?.patrol_routes || [],
-    anomalies: anomalies?.items || demoData?.anomalies || []
+    metadata: demoData.metadata || hotspots.metadata || {},
+    hotspots: hotspots.items || demoData.hotspots || [],
+    clusters: demoData.clusters || {},
+    routes: routes.items || demoData.patrol_routes || [],
+    anomalies: anomalies.items || demoData.anomalies || []
   };
 }
 

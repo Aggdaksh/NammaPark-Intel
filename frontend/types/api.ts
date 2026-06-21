@@ -40,8 +40,6 @@ export interface Cluster {
   road_type?: string;
   total_violations: number;
   active_days?: number;
-  h3_res8?: string;
-  h3_res9?: string;
   avg_bpr_delay_min?: number;
   predicted_delay_min: number;
   p_active?: number;

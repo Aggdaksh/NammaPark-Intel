@@ -11,7 +11,7 @@ dependencies = [
   "osmnx==1.9.3",
   "scikit-learn==1.5.0",
   "shap==0.45.1",
-  "lifelines>=0.29.0",
+  "lifelines==0.29.0",
   "ortools==9.10.4067",
   "pandas==2.2.2",
   "geopandas==0.14.4",

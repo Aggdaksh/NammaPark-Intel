@@ -1,8 +1,0 @@
-api/**
-ml/**
-tools/**
-backend/**
-*.py
-pyproject.toml
-uv.lock
-requirements.txt
