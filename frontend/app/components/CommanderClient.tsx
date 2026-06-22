@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { apiFetch, loadOperationsData } from "@/lib/api";
 import { formatNumber } from "@/lib/format";
 import type { OperationsData } from "@/types/api";
@@ -17,6 +18,7 @@ const examples = [
 ];
 
 export function CommanderClient() {
+  const searchParams = useSearchParams();
   const [operations, setOperations] = useState<OperationsData | null>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -32,6 +34,11 @@ export function CommanderClient() {
   useEffect(() => {
     loadOperationsData().then(setOperations).catch(() => null);
   }, []);
+
+  useEffect(() => {
+    const prompt = searchParams.get("prompt");
+    if (prompt) setInput(prompt);
+  }, [searchParams]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });

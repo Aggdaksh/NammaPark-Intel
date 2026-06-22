@@ -109,6 +109,8 @@ export interface ListResponse<T> {
 export interface Session {
   authenticated: boolean;
   user: string | null;
+  role?: "admin" | "operator" | "viewer" | string | null;
+  label?: string | null;
   expires_at?: number | null;
 }
 

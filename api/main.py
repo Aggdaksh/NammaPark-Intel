@@ -7,7 +7,7 @@ from fastapi import FastAPI
 
 from api.database import database_status
 from api.dependencies import get_config, get_prediction_store
-from api.routers import anomalies, clusters, commander, hotspots, patrol, ingestion
+from api.routers import anomalies, clusters, commander, hotspots, ingestion, patrol, pipeline
 from api.serving import TieredPredictionStore, redis_status
 
 import os
@@ -28,6 +28,7 @@ app.include_router(patrol.router, prefix="/api")
 app.include_router(anomalies.router, prefix="/api")
 app.include_router(commander.router, prefix="/api")
 app.include_router(ingestion.router, prefix="/api")
+app.include_router(pipeline.router, prefix="/api")
 
 
 @app.get("/health")

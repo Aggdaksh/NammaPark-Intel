@@ -305,6 +305,8 @@ async function handleApi(req, res, url) {
     sendJson(res, 200, {
       authenticated: Boolean(session),
       user: session?.username || null,
+      role: session?.role || null,
+      label: session?.label || null,
       expires_at: session?.expires_at || null
     });
     return;
@@ -322,10 +324,12 @@ async function handleApi(req, res, url) {
         200,
         {
           authenticated: true,
-          user: auth.username,
+          user: body.username,
+          role: auth.users.find((item) => item.username === body.username)?.role || "operator",
+          label: auth.users.find((item) => item.username === body.username)?.label || "Operator",
           max_age_seconds: auth.maxAgeSeconds
         },
-        auth.loginHeaders(auth.username)
+        auth.loginHeaders(body.username)
       );
     } catch (error) {
       sendJson(res, 400, { detail: error.message });
@@ -447,7 +451,7 @@ const server = createServer(async (req, res) => {
 
 server.listen(port, "127.0.0.1", () => {
   console.log(`NammaPark Intel demo listening on http://127.0.0.1:${port}`);
-  console.log(`Demo login: ${auth.username} / ${process.env.CURBCLEAR_DEMO_PASSWORD ? "(from env)" : "gridlock"}`);
+  console.log("Demo logins: operator/gridlock, admin/admin123, viewer/viewer123");
   if (!demoData.metadata?.generated_at) {
     console.log("No generated artifacts found. Run npm run generate in this project.");
   }

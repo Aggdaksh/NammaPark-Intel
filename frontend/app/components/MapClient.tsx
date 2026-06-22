@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { loadMapSupport, loadOperationsData } from "@/lib/api";
 import { formatNumber, hourlyRisk, padHour, riskColor } from "@/lib/format";
 import type { Cluster, MapRoads, MapsConfig, OperationsData, PatrolRoute, RoadSegment } from "@/types/api";
@@ -150,6 +151,25 @@ function drawRoutes(
     ctx.setLineDash([Math.max(12, canvas.width / 92), Math.max(8, canvas.width / 150)]);
     ctx.stroke();
     ctx.setLineDash([]);
+
+    const labelCoordinate = coordinates[Math.floor(coordinates.length / 2)];
+    if (labelCoordinate) {
+      const labelPoint = project(canvas, bounds, labelCoordinate[1], labelCoordinate[0]);
+      const label = route.unit_id || `BT-${index + 1}`;
+      const fontSize = Math.max(12, Math.min(16, canvas.width / 104));
+      ctx.font = `800 ${fontSize}px Aptos, Segoe UI, sans-serif`;
+      const width = ctx.measureText(label).width + 18;
+      const height = fontSize + 12;
+      ctx.fillStyle = "rgba(255, 253, 248, 0.94)";
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(labelPoint.x - width / 2, labelPoint.y - height / 2, width, height, 7);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#0b2438";
+      ctx.fillText(label, labelPoint.x - width / 2 + 9, labelPoint.y + fontSize / 2 - 3);
+    }
   });
 }
 
@@ -441,6 +461,27 @@ export function MapClient() {
           map
         });
         googleOverlaysRef.current.push(casing, line);
+        const midpoint = path[Math.floor(path.length / 2)];
+        if (midpoint) {
+          const marker = new maps.Marker({
+            position: midpoint,
+            map,
+            label: {
+              text: route.unit_id || `BT-${index + 1}`,
+              color: "#0b2438",
+              fontWeight: "800",
+              fontSize: "12px"
+            },
+            icon: {
+              path: maps.SymbolPath.CIRCLE,
+              scale: 0,
+              fillOpacity: 0,
+              strokeOpacity: 0
+            },
+            zIndex: 44
+          });
+          googleOverlaysRef.current.push(marker);
+        }
       });
     }
 
@@ -576,9 +617,10 @@ export function MapClient() {
           <div ref={googleMapRef} className={`google-map ${mapMode === "google" ? "active" : ""}`} />
           <canvas ref={canvasRef} className={`local-map ${mapMode === "google" ? "hidden" : ""}`} />
           <div className="map-legend">
-            <span><i className="low" /> Low</span>
-            <span><i className="watch" /> Watch</span>
-            <span><i className="critical" /> Critical</span>
+            <span><i className="shape-pentagon low" /> Low</span>
+            <span><i className="shape-diamond watch" /> Watch</span>
+            <span><i className="shape-hex critical" /> Critical</span>
+            <span><i className="route-line" /> Patrol route</span>
           </div>
         </section>
         <aside className="map-detail">
@@ -614,6 +656,11 @@ export function MapClient() {
                   ? `Exception score: ${selectedCluster.anomaly_zscore} sigma above baseline.`
                   : "No exception alert active."}
               </p>
+              <div className="map-detail-actions">
+                <Link className="primary-button" href={`/commander?prompt=${encodeURIComponent(`Brief cluster ${selectedCluster.cluster_id}`)}`}>
+                  Ask commander
+                </Link>
+              </div>
             </>
           ) : (
             <p className="panel-note">Select a hotspot marker to inspect the cluster.</p>

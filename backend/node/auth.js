@@ -30,17 +30,43 @@ export function createAuth({
   password = process.env.NAMMAPARK_DEMO_PASSWORD || process.env.CURBCLEAR_DEMO_PASSWORD || "gridlock",
   secret = process.env.NAMMAPARK_AUTH_SECRET || process.env.CURBCLEAR_AUTH_SECRET || "nammapark-local-demo-secret",
   cookieName = "cc_session",
-  maxAgeSeconds = DEFAULT_MAX_AGE_SECONDS
+  maxAgeSeconds = DEFAULT_MAX_AGE_SECONDS,
+  users = null
 } = {}) {
+  const demoUsers =
+    users ||
+    [
+      { username, password, role: "operator", label: "Operator" },
+      {
+        username: process.env.NAMMAPARK_ADMIN_USER || "admin",
+        password: process.env.NAMMAPARK_ADMIN_PASSWORD || "admin123",
+        role: "admin",
+        label: "Administrator"
+      },
+      {
+        username: process.env.NAMMAPARK_VIEWER_USER || "viewer",
+        password: process.env.NAMMAPARK_VIEWER_PASSWORD || "viewer123",
+        role: "viewer",
+        label: "Viewer"
+      }
+    ];
+
+  function findUser(candidateUser) {
+    return demoUsers.find((item) => safeEqual(candidateUser, item.username));
+  }
+
   function sign(payload) {
     return createHmac("sha256", secret).update(payload).digest("base64url");
   }
 
   function createToken(user) {
     const now = Math.floor(Date.now() / 1000);
+    const account = findUser(user) || { username: user, role: "operator", label: "Operator" };
     const payload = base64url(
       JSON.stringify({
-        sub: user,
+        sub: account.username,
+        role: account.role,
+        label: account.label,
         iat: now,
         exp: now + maxAgeSeconds
       })
@@ -58,7 +84,12 @@ export function createAuth({
       if (!session.sub || Number(session.exp || 0) < Math.floor(Date.now() / 1000)) {
         return null;
       }
-      return { username: String(session.sub), expires_at: Number(session.exp) };
+      return {
+        username: String(session.sub),
+        role: String(session.role || "operator"),
+        label: String(session.label || "Operator"),
+        expires_at: Number(session.exp)
+      };
     } catch {
       return null;
     }
@@ -74,7 +105,8 @@ export function createAuth({
   }
 
   function validateCredentials(candidateUser, candidatePassword) {
-    return safeEqual(candidateUser, username) && safeEqual(candidatePassword, password);
+    const account = findUser(candidateUser);
+    return Boolean(account) && safeEqual(candidatePassword, account.password);
   }
 
   function loginHeaders(user) {
@@ -92,6 +124,7 @@ export function createAuth({
 
   return {
     username,
+    users: demoUsers.map(({ username: user, role, label }) => ({ username: user, role, label })),
     cookieName,
     maxAgeSeconds,
     isAuthenticated,

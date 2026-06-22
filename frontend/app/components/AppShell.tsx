@@ -9,7 +9,8 @@ import type { Session } from "@/types/api";
 const navItems = [
   { href: "/", label: "Dashboard" },
   { href: "/map", label: "Map" },
-  { href: "/commander", label: "Command Assistant" }
+  { href: "/commander", label: "Command Assistant" },
+  { href: "/data", label: "Data", adminOnly: true }
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -23,6 +24,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         setSession(nextSession);
         if (!nextSession.authenticated) {
           router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+        } else if (pathname.startsWith("/data") && nextSession.role !== "admin") {
+          router.replace("/");
         }
       })
       .catch(() => router.replace(`/login?next=${encodeURIComponent(pathname)}`));
@@ -55,7 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
       <nav className="section-nav" aria-label="Primary navigation">
         <div className="section-nav-inner">
-          {navItems.map((item) => {
+          {navItems.filter((item) => !item.adminOnly || session?.role === "admin").map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             return (
               <Link key={item.href} href={item.href} className={active ? "active" : ""}>

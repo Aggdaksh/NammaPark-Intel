@@ -34,8 +34,8 @@ export function LoginClient() {
       <section className="login-card" aria-labelledby="login-title">
         <div className="login-agency">Bengaluru Traffic Police</div>
         <img className="login-logo" src="/assets/nammapark-wordmark.png" alt="NammaPark Intel" />
-        <h1 id="login-title">Operator Login</h1>
-        <p>Secure sign-in for authorized parking enforcement operations personnel.</p>
+        <h1 id="login-title">Secure Console Login</h1>
+        <p>Sign in as an authorized administrator, operator, or read-only reviewer.</p>
         <form onSubmit={handleSubmit} className="login-form">
           <label>
             Username
@@ -62,8 +62,8 @@ export function LoginClient() {
           {status ? <div className="form-status" role="alert">{status}</div> : null}
         </form>
         <div className="login-footer">
-          <span>Authorized local operator</span>
-          <strong>{username || "operator"}</strong>
+          <span>Demo roles</span>
+          <strong>admin / operator / viewer</strong>
         </div>
       </section>
     </main>

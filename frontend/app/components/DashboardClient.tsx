@@ -6,8 +6,8 @@ import { loadOperationsData } from "@/lib/api";
 import { enforcementWindowLabel, formatNumber, formatPredictionWindow, riskColor } from "@/lib/format";
 import type { Cluster, OperationsData } from "@/types/api";
 import { ClusterPanel } from "./ClusterPanel";
-import { CsvUploader } from "./CsvUploader";
 import { EnforcementQueue } from "./EnforcementQueue";
+import { ShiftBriefExport } from "./ShiftBriefExport";
 
 export function DashboardClient() {
   const [data, setData] = useState<OperationsData | null>(null);
@@ -74,8 +74,6 @@ export function DashboardClient() {
         <MetricCard label="Validated records" value={formatNumber(records)} tone="#145c8c" />
       </section>
 
-      <CsvUploader />
-
       <div className="content-grid">
         <section className="panel queue-panel">
           <div className="panel-heading">
@@ -113,6 +111,7 @@ export function DashboardClient() {
               Assign {data.routes[0]?.unit_id || "BT-01"} from {data.routes[0]?.origin_station || "HAL OLD AIRPORT"} to cluster{" "}
               {topCluster?.cluster_id || "--"} at {data.routes[0]?.waypoints?.[0]?.arrival_label || "17:05"}.
             </p>
+            <ShiftBriefExport data={data} />
           </section>
           <ClusterPanel cluster={selectedCluster} />
           <section className="panel">

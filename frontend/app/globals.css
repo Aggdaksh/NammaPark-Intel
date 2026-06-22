@@ -126,7 +126,7 @@ img {
   max-height: 76px;
   object-fit: contain;
 }
-
+ 
 .operator-area {
   justify-self: end;
   display: grid;
@@ -146,6 +146,7 @@ img {
 
 .operator-area strong {
   font-size: 1.05rem;
+  max-width: 150px;
 }
 
 .logout-button {
@@ -175,7 +176,7 @@ img {
 
 .section-nav-inner {
   display: grid;
-  grid-template-columns: repeat(3, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   width: min(720px, 100%);
   padding: 4px;
   border: 1px solid var(--line);
@@ -999,8 +1000,26 @@ p {
 .map-legend i {
   width: 14px;
   height: 14px;
-  border-radius: 50%;
   display: inline-block;
+}
+
+.map-legend .shape-hex {
+  clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%);
+}
+
+.map-legend .shape-diamond {
+  transform: rotate(45deg);
+}
+
+.map-legend .shape-pentagon {
+  clip-path: polygon(50% 0, 98% 36%, 80% 100%, 20% 100%, 2% 36%);
+}
+
+.map-legend .route-line {
+  width: 28px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--blue);
 }
 
 .map-legend .low {
@@ -1013,6 +1032,16 @@ p {
 
 .map-legend .critical {
   background: var(--red);
+}
+
+.map-detail-actions {
+  margin-top: 14px;
+  display: grid;
+}
+
+.export-brief-button {
+  margin-top: 12px;
+  width: 100%;
 }
 
 /* Restored formal command-console composition */
@@ -1065,8 +1094,7 @@ p {
 }
 
 .section-nav-inner {
-  width: min(580px, 100%);
-  grid-template-columns: 1fr 1fr 1.25fr;
+  width: min(760px, 100%);
   background: #f8f6f1;
 }
 
@@ -1221,13 +1249,14 @@ p {
 }
 
 .map-workspace {
-  grid-template-columns: 390px minmax(0, 1fr);
+  grid-template-columns: 340px minmax(0, 1fr) 310px;
   gap: 16px;
   min-height: calc(100vh - 245px);
 }
 
 .map-detail {
-  display: none;
+  display: block;
+  min-height: calc(100vh - 245px);
 }
 
 .map-sidebar {
@@ -1740,5 +1769,27 @@ p {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+.data-admin-layout {
+  display: grid;
+  gap: 22px;
+}
+
+.data-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.7fr);
+  gap: 22px;
+}
+
+.data-hero {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, auto) 180px;
+}
+
+@media (max-width: 900px) {
+  .data-grid,
+  .data-hero {
+    grid-template-columns: 1fr;
   }
 }

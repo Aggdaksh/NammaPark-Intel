@@ -8,6 +8,29 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 const MAX_UPLOAD_BYTES = 150 * 1024 * 1024;
+const REMOTE_PIPELINE_BASE =
+  process.env.NAMMAPARK_PIPELINE_URL ||
+  process.env.NAMMAPARK_FASTAPI_URL ||
+  process.env.FASTAPI_API_BASE_URL ||
+  "";
+const AUTH_BACKEND_BASE =
+  process.env.NAMMAPARK_BACKEND_URL ||
+  process.env.BACKEND_API_BASE_URL ||
+  "http://127.0.0.1:8788";
+
+async function requireAdmin(request: NextRequest) {
+  try {
+    const response = await fetch(new URL("/api/session", AUTH_BACKEND_BASE), {
+      headers: { cookie: request.headers.get("cookie") || "" },
+      cache: "no-store"
+    });
+    if (!response.ok) return false;
+    const session = await response.json();
+    return Boolean(session?.authenticated && session?.role === "admin");
+  } catch {
+    return false;
+  }
+}
 
 function workspacePath(...segments: string[]) {
   return path.join(process.cwd(), ...segments);
@@ -37,11 +60,61 @@ async function readStatus() {
 }
 
 export async function GET() {
+  if (REMOTE_PIPELINE_BASE) {
+    try {
+      const response = await fetch(new URL("/api/pipeline", REMOTE_PIPELINE_BASE), { cache: "no-store" });
+      const text = await response.text();
+      return new NextResponse(text, {
+        status: response.status,
+        headers: { "content-type": response.headers.get("content-type") || "application/json; charset=utf-8" }
+      });
+    } catch {
+      return NextResponse.json(
+        { status: "unavailable", detail: "Configured pipeline backend is not reachable." },
+        { status: 503 }
+      );
+    }
+  }
   return NextResponse.json(await readStatus());
 }
 
 export async function POST(request: NextRequest) {
+  if (!(await requireAdmin(request))) {
+    return NextResponse.json(
+      { status: "forbidden", detail: "Administrator role is required for data ingestion and model pipeline runs." },
+      { status: 403 }
+    );
+  }
   const formData = await request.formData();
+  if (REMOTE_PIPELINE_BASE) {
+    try {
+      const response = await fetch(new URL("/api/pipeline", REMOTE_PIPELINE_BASE), {
+        method: "POST",
+        body: formData,
+        cache: "no-store"
+      });
+      const text = await response.text();
+      return new NextResponse(text, {
+        status: response.status,
+        headers: { "content-type": response.headers.get("content-type") || "application/json; charset=utf-8" }
+      });
+    } catch {
+      return NextResponse.json(
+        { status: "unavailable", detail: "Pipeline backend is not reachable. Set NAMMAPARK_PIPELINE_URL to the Render FastAPI URL." },
+        { status: 503 }
+      );
+    }
+  }
+  if (process.env.VERCEL) {
+    return NextResponse.json(
+      {
+        status: "not_configured",
+        detail: "Vercel cannot run the local Python ML pipeline. Set NAMMAPARK_PIPELINE_URL or NAMMAPARK_FASTAPI_URL to your Render FastAPI service."
+      },
+      { status: 501 }
+    );
+  }
+
   const file = formData.get("file");
   const runValue = String(formData.get("run") || "false") === "true";
   const maxRowsValue = String(formData.get("maxRows") || "").trim();
