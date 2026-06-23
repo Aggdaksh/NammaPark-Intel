@@ -29,6 +29,7 @@ loadLocalEnv(rootDir);
 const fallbackDir = join(rootDir, "public", "fallback");
 const webDir = join(rootDir, "frontend");
 const port = Number(process.env.PORT || 8787);
+const host = process.env.HOST || (process.env.RENDER ? "0.0.0.0" : "127.0.0.1");
 const auth = createAuth();
 const fallbackStore = createFallbackStore(fallbackDir);
 const pageAliases = new Map([
@@ -449,8 +450,8 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(port, "127.0.0.1", () => {
-  console.log(`NammaPark Intel demo listening on http://127.0.0.1:${port}`);
+server.listen(port, host, () => {
+  console.log(`NammaPark Intel demo listening on http://${host}:${port}`);
   console.log("Demo logins: operator/gridlock, admin/admin123, viewer/viewer123");
   if (!demoData.metadata?.generated_at) {
     console.log("No generated artifacts found. Run npm run generate in this project.");

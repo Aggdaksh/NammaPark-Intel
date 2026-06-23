@@ -1,0 +1,319 @@
+{
+  "metadata": {
+    "generated_at": "2026-06-19T19:18:17.825794+00:00",
+    "source_artifacts": {
+      "features": "ml/artifacts/cluster_hour_features_v1-osm.parquet",
+      "risk_model": "ml/artifacts/risk_model_v1-osm.joblib",
+      "anomaly_model": "ml/artifacts/anomaly_model_v1-osm.joblib"
+    },
+    "data_hash": "sha256:6e4b7ad2e4c713a65fe4f6a9782461f19911fad70d25132cb7aed0fa3c656438",
+    "model_version": "v1-osm",
+    "total_records_read": 298450,
+    "accepted_records": 249970,
+    "hotspot_count": 50,
+    "prediction_window": "2024-05-01T17:00:00+05:30",
+    "bbox": {
+      "min_lat": 12.7,
+      "max_lat": 13.2,
+      "min_lon": 77.3,
+      "max_lon": 77.8
+    },
+    "risk_metrics": {
+      "val_MAE_delay_min": 0.0014434395539512626,
+      "val_MAPE": 0.42430589558974335,
+      "val_SpearmanR": 0.9759218891135539,
+      "val_TopK10_precision": 0.8
+    },
+    "osm_snap": {
+      "enabled": true,
+      "graph_path": "ml/data/bengaluru.graphml",
+      "fallback_rate": 0.0,
+      "median_snap_distance_m": 3.709356478047926e-05
+    },
+    "implementation_notes": [
+      "Fallback data exported from the trained v1-osm artifact stack.",
+      "The deployed champion remains LightGBM DART over OSM-snapped cluster-hour features.",
+      "XGBoost-AFT survival uses the planned heuristic fallback because observed duration signal is weak.",
+      "A neural MLP challenger was benchmarked; PyTorch GRU/TCN remains a future improvement for larger datasets."
+    ],
+    "model_stack": [
+      {
+        "name": "LightGBM DART",
+        "role": "Champion risk prediction"
+      },
+      {
+        "name": "XGBoost-AFT",
+        "role": "Violation survival with fallback"
+      },
+      {
+        "name": "Isolation Forest",
+        "role": "Anomaly detection"
+      },
+      {
+        "name": "OR-Tools CVRPTW",
+        "role": "Patrol routing"
+      },
+      {
+        "name": "Neural MLP",
+        "role": "Experimental challenger, not deployed"
+      }
+    ]
+  },
+  "items": [
+    {
+      "route_id": "route-1",
+      "unit_id": "BT-01",
+      "shift_date": "2024-05-01",
+      "origin_station": "HAL OLD AIRPORT",
+      "shift_start_hour": 17,
+      "waypoints": [
+        {
+          "cluster_id": 474,
+          "arrival_min": 5,
+          "arrival_label": "17:05",
+          "expected_delay_clear": 0.082,
+          "lat": 12.9305959,
+          "lon": 77.6852826,
+          "risk": 39.8
+        },
+        {
+          "cluster_id": 322,
+          "arrival_min": 16,
+          "arrival_label": "17:16",
+          "expected_delay_clear": 0.161,
+          "lat": 12.9397997,
+          "lon": 77.6961432,
+          "risk": 55.7
+        },
+        {
+          "cluster_id": 325,
+          "arrival_min": 31,
+          "arrival_label": "17:31",
+          "expected_delay_clear": 0.096,
+          "lat": 12.9638265,
+          "lon": 77.7174412,
+          "risk": 44.6
+        },
+        {
+          "cluster_id": 734,
+          "arrival_min": 59,
+          "arrival_label": "17:59",
+          "expected_delay_clear": 0.061,
+          "lat": 12.9718988,
+          "lon": 77.627374,
+          "risk": 32.0
+        },
+        {
+          "cluster_id": 517,
+          "arrival_min": 77,
+          "arrival_label": "18:17",
+          "expected_delay_clear": 0.77,
+          "lat": 12.9253635,
+          "lon": 77.6188652,
+          "risk": 100.0
+        }
+      ],
+      "total_delay_cleared_est": 1.17,
+      "geojson": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            77.6690212,
+            12.9462969
+          ],
+          [
+            77.6852826,
+            12.9305959
+          ],
+          [
+            77.6961432,
+            12.9397997
+          ],
+          [
+            77.7174412,
+            12.9638265
+          ],
+          [
+            77.627374,
+            12.9718988
+          ],
+          [
+            77.6188652,
+            12.9253635
+          ]
+        ]
+      },
+      "model_version": "v1-osm"
+    },
+    {
+      "route_id": "route-2",
+      "unit_id": "BT-02",
+      "shift_date": "2024-05-01",
+      "origin_station": "HAL OLD AIRPORT",
+      "shift_start_hour": 17,
+      "waypoints": [
+        {
+          "cluster_id": 462,
+          "arrival_min": 5,
+          "arrival_label": "17:05",
+          "expected_delay_clear": 0.219,
+          "lat": 12.9585608,
+          "lon": 77.6682389,
+          "risk": 55.6
+        },
+        {
+          "cluster_id": 733,
+          "arrival_min": 19,
+          "arrival_label": "17:19",
+          "expected_delay_clear": 0.216,
+          "lat": 12.9790511,
+          "lon": 77.6547935,
+          "risk": 44.4
+        },
+        {
+          "cluster_id": 320,
+          "arrival_min": 40,
+          "arrival_label": "17:40",
+          "expected_delay_clear": 0.466,
+          "lat": 12.9337804,
+          "lon": 77.6908202,
+          "risk": 92.0
+        },
+        {
+          "cluster_id": 401,
+          "arrival_min": 63,
+          "arrival_label": "18:03",
+          "expected_delay_clear": 0.054,
+          "lat": 12.8827896,
+          "lon": 77.6430045,
+          "risk": 31.5
+        },
+        {
+          "cluster_id": 239,
+          "arrival_min": 95,
+          "arrival_label": "18:35",
+          "expected_delay_clear": 0.059,
+          "lat": 12.9718212,
+          "lon": 77.5777629,
+          "risk": 39.5
+        }
+      ],
+      "total_delay_cleared_est": 1.014,
+      "geojson": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            77.646924,
+            12.9452006
+          ],
+          [
+            77.6682389,
+            12.9585608
+          ],
+          [
+            77.6547935,
+            12.9790511
+          ],
+          [
+            77.6908202,
+            12.9337804
+          ],
+          [
+            77.6430045,
+            12.8827896
+          ],
+          [
+            77.5777629,
+            12.9718212
+          ]
+        ]
+      },
+      "model_version": "v1-osm"
+    },
+    {
+      "route_id": "route-3",
+      "unit_id": "BT-03",
+      "shift_date": "2024-05-01",
+      "origin_station": "KODIGEHALLI",
+      "shift_start_hour": 17,
+      "waypoints": [
+        {
+          "cluster_id": 612,
+          "arrival_min": 12,
+          "arrival_label": "17:12",
+          "expected_delay_clear": 0.157,
+          "lat": 13.0275927,
+          "lon": 77.5786307,
+          "risk": 49.0
+        },
+        {
+          "cluster_id": 620,
+          "arrival_min": 29,
+          "arrival_label": "17:29",
+          "expected_delay_clear": 0.084,
+          "lat": 13.0703904,
+          "lon": 77.5905866,
+          "risk": 40.4
+        },
+        {
+          "cluster_id": 677,
+          "arrival_min": 64,
+          "arrival_label": "18:04",
+          "expected_delay_clear": 0.439,
+          "lat": 13.008232,
+          "lon": 77.6948799,
+          "risk": 86.5
+        },
+        {
+          "cluster_id": 521,
+          "arrival_min": 97,
+          "arrival_label": "18:37",
+          "expected_delay_clear": 0.055,
+          "lat": 12.9203965,
+          "lon": 77.6218944,
+          "risk": 30.8
+        },
+        {
+          "cluster_id": 525,
+          "arrival_min": 113,
+          "arrival_label": "18:53",
+          "expected_delay_clear": 0.1,
+          "lat": 12.9172001,
+          "lon": 77.5870818,
+          "risk": 35.6
+        }
+      ],
+      "total_delay_cleared_est": 0.835,
+      "geojson": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            77.6146147,
+            12.9887623
+          ],
+          [
+            77.5786307,
+            13.0275927
+          ],
+          [
+            77.5905866,
+            13.0703904
+          ],
+          [
+            77.6948799,
+            13.008232
+          ],
+          [
+            77.6218944,
+            12.9203965
+          ],
+          [
+            77.5870818,
+            12.9172001
+          ]
+        ]
+      },
+      "model_version": "v1-osm"
+    }
+  ]
+}

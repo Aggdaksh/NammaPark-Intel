@@ -10,7 +10,9 @@ __pycache__/
 ml/data/*.graphml
 ml/data/uploads/
 ml/artifacts/
-public/fallback/
+public/fallback/*
+!public/fallback/
+!public/fallback/*.json
 docs/
 node_modules/
 frontend/node_modules/

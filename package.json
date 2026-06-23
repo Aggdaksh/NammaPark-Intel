@@ -8,6 +8,7 @@
     "generate": "/Users/dakshaggarwal/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 tools/build_demo_data.py --csv \"../jan to may police violation_anonymized791b166.csv\"",
     "dev": "node backend/node/index.js",
     "dev:api": "node backend/node/index.js",
+    "start:node": "node backend/node/index.js",
     "dev:next": "next dev frontend -p 3000",
     "build:next": "next build frontend",
     "start:next": "next start frontend -p 3000",

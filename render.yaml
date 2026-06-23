@@ -1,10 +1,27 @@
 services:
   - type: web
-    name: nammapark-intel-api
+    name: nammapark-node-api
     runtime: node
-    buildCommand: npm install
-    startCommand: node backend/node/index.js
+    buildCommand: npm ci
+    startCommand: npm run start:node
+    healthCheckPath: /health
     envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NAMMAPARK_AUTH_SECRET
+        sync: false
+      - key: GOOGLE_MAPS_API_KEY
+        sync: false
+
+  - type: web
+    name: nammapark-fastapi
+    runtime: python
+    buildCommand: pip install --upgrade pip && pip install -e .
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.8"
       - key: DATABASE_URL
         sync: false
       - key: UPSTASH_REDIS_URL
@@ -13,5 +30,3 @@ services:
         sync: false
       - key: SENTRY_DSN
         sync: false
-      - key: PYTHON_VERSION
-        value: "3.12.8"

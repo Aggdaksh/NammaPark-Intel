@@ -1,0 +1,184 @@
+{
+  "metadata": {
+    "generated_at": "2026-06-19T19:18:17.825794+00:00",
+    "source_artifacts": {
+      "features": "ml/artifacts/cluster_hour_features_v1-osm.parquet",
+      "risk_model": "ml/artifacts/risk_model_v1-osm.joblib",
+      "anomaly_model": "ml/artifacts/anomaly_model_v1-osm.joblib"
+    },
+    "data_hash": "sha256:6e4b7ad2e4c713a65fe4f6a9782461f19911fad70d25132cb7aed0fa3c656438",
+    "model_version": "v1-osm",
+    "total_records_read": 298450,
+    "accepted_records": 249970,
+    "hotspot_count": 50,
+    "prediction_window": "2024-05-01T17:00:00+05:30",
+    "bbox": {
+      "min_lat": 12.7,
+      "max_lat": 13.2,
+      "min_lon": 77.3,
+      "max_lon": 77.8
+    },
+    "risk_metrics": {
+      "val_MAE_delay_min": 0.0014434395539512626,
+      "val_MAPE": 0.42430589558974335,
+      "val_SpearmanR": 0.9759218891135539,
+      "val_TopK10_precision": 0.8
+    },
+    "osm_snap": {
+      "enabled": true,
+      "graph_path": "ml/data/bengaluru.graphml",
+      "fallback_rate": 0.0,
+      "median_snap_distance_m": 3.709356478047926e-05
+    },
+    "implementation_notes": [
+      "Fallback data exported from the trained v1-osm artifact stack.",
+      "The deployed champion remains LightGBM DART over OSM-snapped cluster-hour features.",
+      "XGBoost-AFT survival uses the planned heuristic fallback because observed duration signal is weak.",
+      "A neural MLP challenger was benchmarked; PyTorch GRU/TCN remains a future improvement for larger datasets."
+    ],
+    "model_stack": [
+      {
+        "name": "LightGBM DART",
+        "role": "Champion risk prediction"
+      },
+      {
+        "name": "XGBoost-AFT",
+        "role": "Violation survival with fallback"
+      },
+      {
+        "name": "Isolation Forest",
+        "role": "Anomaly detection"
+      },
+      {
+        "name": "OR-Tools CVRPTW",
+        "role": "Patrol routing"
+      },
+      {
+        "name": "Neural MLP",
+        "role": "Experimental challenger, not deployed"
+      }
+    ]
+  },
+  "items": [
+    {
+      "cluster_id": 517,
+      "police_station": "MADIWALA",
+      "centroid_lat": 12.9253635,
+      "centroid_lon": 77.6188652,
+      "anomaly_zscore": 3.89,
+      "final_risk_0_100": 100.0,
+      "predicted_delay_min": 0.1832,
+      "description": "Cluster 517 is 3.89 sigma above its hour-of-day baseline near MADIWALA."
+    },
+    {
+      "cluster_id": 677,
+      "police_station": "K.R. PURA",
+      "centroid_lat": 13.008232,
+      "centroid_lon": 77.6948799,
+      "anomaly_zscore": 4.66,
+      "final_risk_0_100": 86.5,
+      "predicted_delay_min": 0.127,
+      "description": "Cluster 677 is 4.66 sigma above its hour-of-day baseline near K.R. PURA."
+    },
+    {
+      "cluster_id": 612,
+      "police_station": "KODIGEHALLI",
+      "centroid_lat": 13.0275927,
+      "centroid_lon": 77.5786307,
+      "anomaly_zscore": 3.12,
+      "final_risk_0_100": 49.0,
+      "predicted_delay_min": 0.0587,
+      "description": "Cluster 612 is 3.12 sigma above its hour-of-day baseline near KODIGEHALLI."
+    },
+    {
+      "cluster_id": 474,
+      "police_station": "HAL OLD AIRPORT",
+      "centroid_lat": 12.9305959,
+      "centroid_lon": 77.6852826,
+      "anomaly_zscore": 4.41,
+      "final_risk_0_100": 39.8,
+      "predicted_delay_min": 0.055,
+      "description": "Cluster 474 is 4.41 sigma above its hour-of-day baseline near HAL OLD AIRPORT."
+    },
+    {
+      "cluster_id": 525,
+      "police_station": "JAYANAGARA",
+      "centroid_lat": 12.9172001,
+      "centroid_lon": 77.5870818,
+      "anomaly_zscore": 2.67,
+      "final_risk_0_100": 35.6,
+      "predicted_delay_min": 0.0794,
+      "description": "Cluster 525 is 2.67 sigma above its hour-of-day baseline near JAYANAGARA."
+    },
+    {
+      "cluster_id": 401,
+      "police_station": "HULIMAVU",
+      "centroid_lat": 12.8827896,
+      "centroid_lon": 77.6430045,
+      "anomaly_zscore": 4.03,
+      "final_risk_0_100": 31.5,
+      "predicted_delay_min": 0.0437,
+      "description": "Cluster 401 is 4.03 sigma above its hour-of-day baseline near HULIMAVU."
+    },
+    {
+      "cluster_id": 521,
+      "police_station": "MADIWALA",
+      "centroid_lat": 12.9203965,
+      "centroid_lon": 77.6218944,
+      "anomaly_zscore": 2.82,
+      "final_risk_0_100": 30.8,
+      "predicted_delay_min": 0.0459,
+      "description": "Cluster 521 is 2.82 sigma above its hour-of-day baseline near MADIWALA."
+    },
+    {
+      "cluster_id": 330,
+      "police_station": "HAL OLD AIRPORT",
+      "centroid_lat": 12.9572364,
+      "centroid_lon": 77.7016562,
+      "anomaly_zscore": 5.53,
+      "final_risk_0_100": 24.5,
+      "predicted_delay_min": 0.025,
+      "description": "Cluster 330 is 5.53 sigma above its hour-of-day baseline near HAL OLD AIRPORT."
+    },
+    {
+      "cluster_id": 374,
+      "police_station": "HULIMAVU",
+      "centroid_lat": 12.8943379,
+      "centroid_lon": 77.6365278,
+      "anomaly_zscore": 2.87,
+      "final_risk_0_100": 23.1,
+      "predicted_delay_min": 0.0272,
+      "description": "Cluster 374 is 2.87 sigma above its hour-of-day baseline near HULIMAVU."
+    },
+    {
+      "cluster_id": 496,
+      "police_station": "JAYANAGARA",
+      "centroid_lat": 12.9314643,
+      "centroid_lon": 77.5824827,
+      "anomaly_zscore": 3.62,
+      "final_risk_0_100": 18.5,
+      "predicted_delay_min": 0.0137,
+      "description": "Cluster 496 is 3.62 sigma above its hour-of-day baseline near JAYANAGARA."
+    },
+    {
+      "cluster_id": 378,
+      "police_station": "HULIMAVU",
+      "centroid_lat": 12.8892939,
+      "centroid_lon": 77.6396292,
+      "anomaly_zscore": 3.03,
+      "final_risk_0_100": 17.6,
+      "predicted_delay_min": 0.0172,
+      "description": "Cluster 378 is 3.03 sigma above its hour-of-day baseline near HULIMAVU."
+    },
+    {
+      "cluster_id": 36,
+      "police_station": "KAMAKSHIPALYA",
+      "centroid_lat": 12.989546,
+      "centroid_lon": 77.5014035,
+      "anomaly_zscore": 2.32,
+      "final_risk_0_100": 16.3,
+      "predicted_delay_min": 0.0188,
+      "description": "Cluster 36 is 2.32 sigma above its hour-of-day baseline near KAMAKSHIPALYA."
+    }
+  ]
+}
