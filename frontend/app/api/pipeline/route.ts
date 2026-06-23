@@ -16,7 +16,7 @@ const REMOTE_PIPELINE_BASE =
 const AUTH_BACKEND_BASE =
   process.env.NAMMAPARK_BACKEND_URL ||
   process.env.BACKEND_API_BASE_URL ||
-  "http://127.0.0.1:8788";
+  "http://127.0.0.1:8787";
 
 async function requireAdmin(request: NextRequest) {
   try {
