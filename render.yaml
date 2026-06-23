@@ -1,9 +1,9 @@
 services:
   - type: web
     name: nammapark-intel-api
-    runtime: python
-    buildCommand: pip install uv && uv sync
-    startCommand: uv run uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    runtime: node
+    buildCommand: npm install
+    startCommand: node backend/node/index.js
     envVars:
       - key: DATABASE_URL
         sync: false
